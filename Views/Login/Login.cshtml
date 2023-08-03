@@ -1,0 +1,42 @@
+﻿@{
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 100px;">
+        <h2>Login</h2>
+        <form method="post" action="/Login/Authenticate" onsubmit="return validateForm()">
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" />
+                <span id="passwordError" style="color: red; display: none;">Password is required</span>
+            </div>
+            <div style="margin-top: 20px;">
+                <input type="submit" value="Login" />
+            </div>
+        </form>
+    </div>
+
+    <script>function validateForm() {
+            var passwordInput = document.getElementById("password");
+            var passwordError = document.getElementById("passwordError");
+
+            if (passwordInput.value.trim() === "") {
+                passwordError.style.display = "block";
+                return false; // Prevent form submission
+            } else {
+                passwordError.style.display = "none";
+                return true; // Allow form submission
+            }
+        }</script>
+</body>
+</html>

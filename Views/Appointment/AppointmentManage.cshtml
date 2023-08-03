@@ -1,0 +1,47 @@
+﻿@model Appointment
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Appointment</title>
+</head>
+<body>
+    <h2>Manage Appointment</h2>
+    @using (Html.BeginForm("SaveChanges", "Appointment", FormMethod.Post))
+    {
+        @Html.HiddenFor(model => model.id) <!-- Hidden input for the ID -->
+        <div class="form-group">
+            <label>Date and Hour:</label>
+            <input asp-for="date" type="datetime-local" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Address:</label>
+            <select asp-for="adressOfBuilding" class="form-control">
+                <option value="">Select Address</option>
+                @foreach (var address in ViewBag.Addresses as List<string>)
+                {
+                    <option value="@address">@address</option>
+                }
+            </select>
+            <span asp-validation-for="adressOfBuilding" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="patientSsn">Patient:</label>
+            @Html.DropDownListFor(model => model.patientSsn, ViewBag.Patients as SelectList, "Select a Patient", new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label asp-for="doctorSsn">Doctor:</label>
+            @Html.DropDownListFor(model => model.doctorSsn, ViewBag.Doctors as SelectList, "Select a Doctor", new { @class = "form-control" })
+        </div>
+        <div>
+            <label>Room Number:</label>
+            <input type="text" id="roomNumber" name="roomNumber" value="@Model.roomNumber">
+        </div>
+        <div>
+            <button type="submit">Save Changes</button>
+        </div>
+    }
+</body>
+</html>

@@ -1,0 +1,193 @@
+﻿@using hospital.Models
+@model PaginatedList<hospital.Models.Appointment>
+@using (Html.BeginForm("Index", "Appointment", FormMethod.Get))
+{
+    <p>
+        Search: @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+@{
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Listing</title>
+    <script>function sortTable(columnName) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("appointmentTable"); // Assuming your table ID is "appointmentTable"
+            switching = true;
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnName].innerText;
+                    y = rows[i + 1].getElementsByTagName("td")[columnName].innerText;
+
+                    if (columnName === "id") { // For numeric sorting
+                        x = parseInt(x);
+                        y = parseInt(y);
+                    }
+
+                    if (x.toLowerCase() > y.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .delete-icon {
+            color: red;
+        }
+
+        .manage-icon {
+            color: blue;
+        }
+    </style>
+    <script>
+        function confirmDelete(id) {
+            var confirmation = confirm("Are you sure you want to delete this appointment?");
+            if (confirmation) {
+                location.href = '@Url.Action("Delete", "Appointment")' + '?id=' + id;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Appointment Listing</h2>
+    <div style="margin-bottom: 20px;">
+        <a class="btn btn-primary" href="@Url.Action("AppointmentManage", "Appointment")">New Appointment</a>
+    </div>
+    <table id="appointmentTable">
+        <thead>
+            <tr>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.IdSort, searchString = ViewBag.CurrentFilter })">ID</a></th>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.DateSort, searchString = ViewBag.CurrentFilter })">Date</a></th>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.PatientSsnSort, searchString = ViewBag.CurrentFilter })">Patient</a></th>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.DoctorSsnSort, searchString = ViewBag.CurrentFilter })">Doctor</a></th>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.AdressOfBuildingSort, searchString = ViewBag.CurrentFilter })">Address</a></th>
+                <th><a href="@Url.Action("Index", new { sortOrder = ViewBag.RoomNumberSort, searchString = ViewBag.CurrentFilter })">Room Number</a></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            @foreach (var appointment in Model)
+            {
+                <tr>
+                    <td>@appointment.id</td>
+                    <td>@appointment.date</td>
+                    <td>@(appointment.Patient?.fullName ?? "N/A")</td> <!-- Display Patient's Full Name or "N/A" if null -->
+                    <td>@(appointment.Doctor?.fullName ?? "N/A")</td> <!-- Display Doctor's Full Name or "N/A" if null -->
+                    <td>@appointment.adressOfBuilding</td>
+                    <td>@appointment.roomNumber</td>
+                    <td class="actions">
+                        <button class="icon-button delete-icon" onclick="confirmDelete('@appointment.id')">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                        <a class="icon-button manage-icon" href="@Url.Action("AppointmentManage", "Appointment", new { id = appointment.id })">
+                            <i class="fas fa-wrench"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination-container">
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageIndex - 1 })">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.PageIndex)
+            {
+                <span>@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", new { page = i })">@i</a>
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageIndex + 1 })">Next</a>
+        }
+    </div>
+</body>
+</html>
+
+@section Scripts {
+    <script>function sortTable(columnName) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("appointmentTable");
+            switching = true;
+            dir = "asc";
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnName].innerText;
+                    y = rows[i + 1].getElementsByTagName("td")[columnName].innerText;
+
+                    if (columnName === "id") { // For numeric sorting
+                        x = parseInt(x);
+                        y = parseInt(y);
+                    }
+
+                    var cmp = x.localeCompare(y);
+                    if ((dir === "asc" && cmp > 0) || (dir === "desc" && cmp < 0)) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }</script>
+}
+
