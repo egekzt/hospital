@@ -48,11 +48,17 @@ public class AppointmentController : Controller
         if (!String.IsNullOrEmpty(searchString))
         {
             searchString = searchString.ToLower();
-            appointments = appointments.Where(a =>
-                a.id.ToString().Contains(searchString) ||
+            appointments = appointments.Select(a =>
+            {
+                a.Patient = _dbContext.Patient.FirstOrDefault(p => p.ssn == a.patientSsn);
+                a.Doctor = _dbContext.Doctor.FirstOrDefault(d => d.ssn == a.doctorSsn);
+                return a;
+            }).Where(a =>
                 a.date.ToString().Contains(searchString) ||
-                a.Patient.fullName.ToLower().Contains(searchString) || // Assuming the Patient model has a FullName property
-                a.Doctor.fullName.ToLower().Contains(searchString)   // Assuming the Doctor model has a FullName property
+                (a.Patient?.fullName?.ToLower() ?? "").Contains(searchString) ||
+                (a.Doctor?.fullName?.ToLower() ?? "").Contains(searchString) ||
+                a.adressOfBuilding.ToLower().Contains(searchString) ||
+                a.roomNumber.ToString().Contains(searchString)
             ).ToList();
         }
 

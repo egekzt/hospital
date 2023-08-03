@@ -8,7 +8,7 @@ namespace hospital.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? id { get; set; }
+        public int id { get; set; }
         public string? doctorSsn { get; set; }
         public string? patientSsn { get; set; }
         public DateTime? date { get; set; }
