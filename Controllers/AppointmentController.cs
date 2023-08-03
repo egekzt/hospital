@@ -161,11 +161,17 @@ public class AppointmentController : Controller
 
             // Update the appointment properties with the values from the form
             appointment.id = model.id;
-            appointment.date = model.date;
+            if (model.date.HasValue)
+            {
+                DateTimeOffset dateTimeOffset = new DateTimeOffset(model.date.Value, TimeSpan.Zero);
+                appointment.date = dateTimeOffset.UtcDateTime;
+            }
             appointment.patientSsn = model.patientSsn;
             appointment.doctorSsn = model.doctorSsn;
             appointment.adressOfBuilding = model.adressOfBuilding;
             appointment.roomNumber = model.roomNumber;
+            _dbContext.Appointment.Update(appointment);
+            _dbContext.SaveChanges();
 
             // Save the changes to the database
             
