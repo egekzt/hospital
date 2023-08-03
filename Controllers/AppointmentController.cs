@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using PagedList;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 //pagination,filter sorting
 //manage deletion problem,manage not displaying correctly
 //check creation
@@ -143,7 +144,11 @@ public class AppointmentController : Controller
             if (appointment == null)
             {
                 var appointment2 = new Appointment();
-                appointment2.date = model.date;
+                if (model.date.HasValue)
+                {
+                    DateTimeOffset dateTimeOffset = new DateTimeOffset(model.date.Value, TimeSpan.Zero);
+                    appointment2.date = dateTimeOffset.UtcDateTime;
+                }
                 appointment2.patientSsn = model.patientSsn;
                 appointment2.doctorSsn = model.doctorSsn;
                 appointment2.adressOfBuilding = model.adressOfBuilding;
@@ -172,7 +177,7 @@ public class AppointmentController : Controller
     }
 
     [HttpGet]
-    public IActionResult AppointmentManage(Appointment model)
+    public IActionResult AppointmentManage(int? id)
     {
         var patients = _dbContext.Patient.ToList();
         var doctors = _dbContext.Doctor.ToList();
@@ -182,34 +187,33 @@ public class AppointmentController : Controller
         ViewBag.Doctors = new SelectList(doctors, "ssn", "fullName");
         ViewBag.Addresses = addresses;
 
-        if (ModelState.IsValid)
+       
+        if (id == null)
         {
-            if (model.id == null)
-            {
-                // Create new appointment
-                Appointment x = new Appointment();
+             // Create new appointment
+             Appointment x = new Appointment();
                 return View("AppointmentManage",x);
-            }
-            else
-            {
-                // Update existing appointment
-                var appointment = _dbContext.Appointment.Find(model.id);
-                if (appointment == null)
-                {
-                    return NotFound();
-                }
-
-                // Update the appointment properties with the values from the form
-                return View("AppointmentManage", model);
-
-                // No need to call _dbContext.Appointment.Update(appointment);
-                // EF Core will automatically track changes made to the attached entity and save them.
-            }
-
-            // Save the changes to the database
-            
         }
-        
+        else
+        {
+            // Update existing appointment
+            var appointment = _dbContext.Appointment
+                .Include(a => a.Patient) // Include the Patient related entity
+                .Include(a => a.Doctor) // Include the Doctor related entity
+                .FirstOrDefault(a => a.id == id);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            return View("AppointmentManage", appointment);
+        }
+
+
+
+
+
         return View("Index");
     }
 
