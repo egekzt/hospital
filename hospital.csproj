@@ -16,6 +16,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <None Remove="PagedList.Mvc" />
+    <None Remove="Microsoft.AspNetCore.Identity" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
@@ -28,6 +29,7 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="PagedList.Mvc" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Appointment\" />

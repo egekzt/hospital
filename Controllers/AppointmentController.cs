@@ -124,6 +124,7 @@ public class AppointmentController : Controller
         return View(appointments);
     }
 
+
     public IActionResult Delete(int id)
     {
         // Find the appointment with the given id

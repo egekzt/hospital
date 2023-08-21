@@ -85,7 +85,9 @@
 <body>
     <h2>Appointment Listing</h2>
     <div style="margin-bottom: 20px;">
-        <a class="btn btn-primary" href="@Url.Action("AppointmentManage", "Appointment")">New Appointment</a>
+        
+            <a class="btn btn-primary" href="@Url.Action("AppointmentManage", "Appointment")">New Appointment</a>
+        
     </div>
     <table id="appointmentTable">
         <thead>
@@ -112,12 +114,14 @@
                     <td>@appointment.adressOfBuilding</td>
                     <td>@appointment.roomNumber</td>
                     <td class="actions">
-                        <button class="icon-button delete-icon" onclick="confirmDelete('@appointment.id')">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
+                        
+                            <button class="icon-button delete-icon" onclick="confirmDelete('@appointment.id')">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
                         <a class="icon-button manage-icon" href="@Url.Action("AppointmentManage", "Appointment", new { id = appointment.id })">
                             <i class="fas fa-wrench"></i>
                         </a>
+                            
                     </td>
                 </tr>
             }
