@@ -36,7 +36,7 @@ namespace hospital.Controllers
                 if (secretary != null)
                 {
                 // Assign Secretary policy
-                // Redirect to Secretary area
+                
                 HttpContext.User.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "SecretaryPolicy") }));
                 return RedirectToAction("Index", "Appointment", new { area = "Secretary" });
                 }
@@ -46,7 +46,7 @@ namespace hospital.Controllers
                 if (doctor != null)
                 {
                 // Assign Doctor policy
-                // Redirect to Doctor area
+                
                 HttpContext.User.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "DoctorPolicy") }));
 
                 return RedirectToAction("Index", "Appointment", new { area = "Doctor" });
@@ -58,7 +58,7 @@ namespace hospital.Controllers
                 if (patient != null)
                 {
                 // Assign Patient policy
-                // Redirect to Patient area
+                
                 HttpContext.User.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "PatientPolicy") }));
 
                 return RedirectToAction("Index", "Appointment", new { area = "Patient" });

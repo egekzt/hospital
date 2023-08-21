@@ -62,7 +62,7 @@ public class AppointmentController : Controller
             ).ToList();
         }
 
-        // Include related entities (Patient and Doctor) in the Appointment objects
+        
         appointments = appointments.Select(a =>
         {
             a.Patient = _dbContext.Patient.FirstOrDefault(p => p.ssn == a.patientSsn);
